@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Voice Command & Parafrase</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Voice Command & Parafrase</h1>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h1>Speak Up !</h1>
+        <p id="randomText"></p>
+    </div>
+
+      <button onclick="refreshRandomText()">Refresh</button>
+      <button onclick="startListening()">Start Listening</button>
+      <p id="result">Result:</p>
+      <button
+        id="playPronunciation"
+        onclick="playCorrectPronunciation()"
+        style="display: none"
+      >
+        Play Correct Pronunciation
+      </button>
+    </div>
+    <script>
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
+      const possibleTexts = [
+        "Chaonima",
+        "Your people are sick",
+        "you what mate ?",
+        "My name is slim shady",
+        "what is your name",
+        "I am thirsty",
+        "I’m hungry",
+        "I’m tired",
+        "I am not thirsty",
+        "I’m not hungry",
+        "I’m not tired",
+        "Are you thirsty?",
+        "Yes, I’m",
+        "No, I’m not",
+        "Are you hungry?",
+        "Are you tired?",
+        "I want to sleep",
+        "I want to eat",
+        "I want to take a bath",
+        "I do not want to sleep",
+        "I don’t want to eat",
+        "Yes, I do",
+        "No, I don’t",
+        "Do you want to eat?",
+        "I have two elder sisters",
+        "I have enough money",
+        "I have some story books",
+        "I do not have any elder sisters",
+        "Yes, do",
+        "Do you have enough money?",
+        "Do you have any story books?",
+      ];
+
+      // Mapping of correct phrases and their pronunciation instructions
+      const pronunciationInstructions = {
+        Chaonima: "Chao nee ma",
+        "Your people are sick": "Your pee-pull are sick",
+        "you what mate ?": "You what mate",
+        "My name is slim shady": "My name is slim shady",
+        "what is your name": "what is your name",
+        "I am thirsty":"I am thirsty",
+        "I’m hungry":"I’m hungry",
+        "I’m tired":"I’m tired",
+        "I am not thirsty":"I am not thirsty",
+        "I’m not hungry":"I’m not hungry",
+        "I’m not tired":"I’m not tired",
+        "Are you thirsty?":"Are you thirsty?",
+        "Yes, I’m":"Yes, I’m",
+        "No, I’m not":"No, I’m not",
+        "Are you hungry?":"Are you hungry?",
+        "No, I’m not":"No, I’m not",
+        "Are you tired?":"Are you tired?",
+        "Yes, I’m":"Yes, I’m",
+        "No, I’m not":"No, I’m not",
+        "I want to sleep":"I want to sleep",
+        "I want to eat":"I want to eat",
+        "I want to take a bath":"I want to take a bath",
+        "I do not want to sleep":"I do not want to sleep",
+        "I don’t want to eat":"I don’t want to eat",
+        "I don’t want to take a bath":"I don’t want to take a bath",
+        "Do you want to sleep?":"Do you want to sleep?",
+        "Yes, I do":"Yes, I do",
+        "No, I don’t":"No, I don’t",
+        "Do you want to eat?":"Do you want to eat?",
+        "I have two elder sisters":"I have two elder sisters",
+        "I have enough money":"I have enough money",
+        "I have some story books":"I have some story books",
+        "I do not have any elder sisters":"I do not have any elder sisters",
+        "I don’t have enough money":"I don’t have enough money",
+        "I don’t have any story books":"I don’t have any story books",
+        "Do you have any elder sisters?":"Do you have any elder sisters?",
+        "Yes, do":"Yes, do",
+        "Do you have enough money?":"Do you have enough money?",
+        "Do you have any story books?":"Do you have any story books?",
+      };
+
+      function getRandomText() {
+        return possibleTexts[Math.floor(Math.random() * possibleTexts.length)];
+      }
+
+      function refreshRandomText() {
+        document.getElementById("randomText").innerText = getRandomText();
+        document.getElementById("result").innerText = "Result:";
+        document.getElementById("playPronunciation").style.display = "none";
+      }
+
+      document.getElementById("randomText").innerText = getRandomText();
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("result").innerText = `Result: ${transcript}`;
+        checkMatch(transcript);
+      };
+
+      function startListening() {
+        recognition.start();
+      }
+
+      function checkMatch(text) {
+        const isMatch = possibleTexts.some((possibleText) =>
+          text.toLowerCase().includes(possibleText.toLowerCase())
+        );
+
+        if (isMatch) {
+          alert("You said the words correctly!");
+          document.getElementById("playPronunciation").style.display = "none";
+        } else {
+          showCorrectText();
+        }
+      }
+
+      function showCorrectText() {
+        const correctText = document
+          .getElementById("randomText")
+          .innerText.trim();
+
+        // Display popup with correct phrase
+        const userParaphrasedText = document
+          .getElementById("result")
+          .innerText.split(":")[1]
+          .trim();
+        const correctPopupMessage = `You said: "${userParaphrasedText}"\nCorrect phrase: "${correctText}"`;
+
+        alert(correctPopupMessage);
+
+        // Display the play button for correct pronunciation
+        document.getElementById("playPronunciation").style.display = "block";
+      }
+
+      function speak(text) {
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(text);
+        synth.speak(utterance);
+      }
+
+      function playCorrectPronunciation() {
+        const correctText = document
+          .getElementById("randomText")
+          .innerText.trim();
+        speak(pronunciationInstructions[correctText]);
+      }
+    </script>
+  </body>
+</html>

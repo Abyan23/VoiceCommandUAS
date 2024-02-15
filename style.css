@@ -1,0 +1,33 @@
+body{
+  background-image: url("td.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f0f0f0;
+}
+
+.header {
+    text-align: center;
+}
+
+.main {
+    text-align: center;
+    margin: 20px;
+    height: 25rem;
+    background-image: url("back.jpeg");
+    justify-content: space-around;
+  }
+
+  .text {
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 15%;
+    cursor: pointer;
+  }
+  body {
+    color: white;
+  }
